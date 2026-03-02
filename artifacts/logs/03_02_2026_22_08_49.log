@@ -1,0 +1,6 @@
+[ 2026-03-02 22:08:50,671 ] - 162 - numexpr.utils - INFO - NumExpr defaulting to 12 threads.
+[ 2026-03-02 22:08:51,546 ] - 21 - MovieRecommendationLogger - INFO - Loading Prediction Artifacts (DF, Indices, Matrix)...
+[ 2026-03-02 22:08:51,564 ] - 86 - MovieRecommendationLogger - INFO - object loaded from artifacts/model_trainer\indices.pkl
+[ 2026-03-02 22:08:52,458 ] - 86 - MovieRecommendationLogger - INFO - object loaded from artifacts/model_trainer\tfidf_matrix.pkl
+[ 2026-03-02 22:08:52,523 ] - 86 - MovieRecommendationLogger - INFO - object loaded from artifacts/data_transformation\df.pkl
+[ 2026-03-02 22:08:52,542 ] - 34 - MovieRecommendationLogger - INFO - Artifacts loaded successfully into PredictionPipeline

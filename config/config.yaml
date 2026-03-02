@@ -1,0 +1,24 @@
+artifacts_root: artifacts
+
+data_ingestion:
+  root_dir: artifacts/data_ingestion
+  source_URL: "local" # We have local data for now, but keeping config driven
+  local_data_file: movies_metadata.csv
+  dataset_name: movies_metadata
+
+data_transformation:
+  root_dir: artifacts/data_transformation
+  data_path: artifacts/data_ingestion/movies_metadata.csv
+  transformed_data_path: artifacts/data_transformation/df.pkl
+
+model_trainer:
+  root_dir: artifacts/model_trainer
+  transformed_data_path: artifacts/data_transformation/df.pkl
+  model_name: tfidf_matrix.pkl
+  vectorizer_name: tfidf.pkl
+  indices_name: indices.pkl
+
+model_evaluation:
+  root_dir: artifacts/model_evaluation
+  model_path: artifacts/model_trainer/tfidf_matrix.pkl
+  evaluation_metric_name: "Cosine Similarity Shape"

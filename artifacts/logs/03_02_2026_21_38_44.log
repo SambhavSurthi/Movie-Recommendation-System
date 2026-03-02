@@ -1,0 +1,39 @@
+[ 2026-03-02 21:38:45,282 ] - 162 - numexpr.utils - INFO - NumExpr defaulting to 12 threads.
+[ 2026-03-02 21:38:47,081 ] - 5 - MovieRecommendationLogger - INFO - Starting Main Execution Entrypoint...
+[ 2026-03-02 21:38:47,081 ] - 16 - MovieRecommendationLogger - INFO - ========== TRAINING PIPELINE STARTED ==========
+[ 2026-03-02 21:38:47,083 ] - 31 - MovieRecommendationLogger - INFO - yaml file: config\config.yaml loaded successfully
+[ 2026-03-02 21:38:47,084 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts
+[ 2026-03-02 21:38:47,084 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts/data_ingestion
+[ 2026-03-02 21:38:47,084 ] - 17 - MovieRecommendationLogger - INFO - Initiating Data Ingestion Component
+[ 2026-03-02 21:38:47,085 ] - 26 - MovieRecommendationLogger - INFO - Reading local dataset from movies_metadata.csv
+[ 2026-03-02 21:38:47,106 ] - 35 - MovieRecommendationLogger - INFO - Data copied to ingestion artifacts dir at artifacts\data_ingestion\movies_metadata.csv
+[ 2026-03-02 21:38:47,107 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts/data_transformation
+[ 2026-03-02 21:38:47,107 ] - 23 - MovieRecommendationLogger - INFO - Initiating Data Transformation Component
+[ 2026-03-02 21:38:47,107 ] - 27 - MovieRecommendationLogger - INFO - Reading data from artifacts\data_ingestion\movies_metadata.csv
+[ 2026-03-02 21:38:47,935 ] - 30 - MovieRecommendationLogger - INFO - Initial shape of the dataframe is (45466, 24)
+[ 2026-03-02 21:38:47,935 ] - 33 - MovieRecommendationLogger - INFO - Applying feature combinations...
+[ 2026-03-02 21:38:48,622 ] - 46 - MovieRecommendationLogger - INFO - Dropping unnecessary columns and saving required data...
+[ 2026-03-02 21:38:48,626 ] - 53 - MovieRecommendationLogger - INFO - Shape of the final dataframe before save is (45460, 3)
+[ 2026-03-02 21:38:48,663 ] - 67 - MovieRecommendationLogger - INFO - object saved at artifacts\data_transformation\df.pkl
+[ 2026-03-02 21:38:48,663 ] - 61 - MovieRecommendationLogger - INFO - Data Transformation completed and object saved to artifacts\data_transformation\df.pkl
+[ 2026-03-02 21:38:48,683 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts/model_trainer
+[ 2026-03-02 21:38:48,683 ] - 23 - MovieRecommendationLogger - INFO - Initiating Model Training (TF-IDF Vectorization)
+[ 2026-03-02 21:38:48,683 ] - 26 - MovieRecommendationLogger - INFO - Loading transformed data from artifacts\data_transformation\df.pkl
+[ 2026-03-02 21:38:48,734 ] - 86 - MovieRecommendationLogger - INFO - object loaded from artifacts\data_transformation\df.pkl
+[ 2026-03-02 21:38:48,735 ] - 30 - MovieRecommendationLogger - INFO - Creating TF-IDF Vectorizer
+[ 2026-03-02 21:38:48,735 ] - 34 - MovieRecommendationLogger - INFO - Fitting and transforming text data to tfidf matrix.. this might take a minute.
+[ 2026-03-02 21:38:53,663 ] - 37 - MovieRecommendationLogger - INFO - Extracting indices wrapper map...
+[ 2026-03-02 21:38:53,698 ] - 48 - MovieRecommendationLogger - INFO - Saving trained artifacts to Models directory...
+[ 2026-03-02 21:38:53,719 ] - 67 - MovieRecommendationLogger - INFO - object saved at artifacts\model_trainer\tfidf_matrix.pkl
+[ 2026-03-02 21:38:53,763 ] - 67 - MovieRecommendationLogger - INFO - object saved at artifacts\model_trainer\tfidf.pkl
+[ 2026-03-02 21:38:53,776 ] - 67 - MovieRecommendationLogger - INFO - object saved at artifacts\model_trainer\indices.pkl
+[ 2026-03-02 21:38:53,777 ] - 59 - MovieRecommendationLogger - INFO - Model Training phase completed successfully!
+[ 2026-03-02 21:38:53,795 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts/model_evaluation
+[ 2026-03-02 21:38:53,796 ] - 20 - MovieRecommendationLogger - INFO - Initiating Model Evaluation...
+[ 2026-03-02 21:38:53,796 ] - 23 - MovieRecommendationLogger - INFO - Loading evaluated model from artifacts\model_trainer\tfidf_matrix.pkl
+[ 2026-03-02 21:38:53,807 ] - 86 - MovieRecommendationLogger - INFO - object loaded from artifacts\model_trainer\tfidf_matrix.pkl
+[ 2026-03-02 21:38:53,807 ] - 27 - MovieRecommendationLogger - INFO - Performing sanity metrics (shape checks, sparsity)
+[ 2026-03-02 21:38:53,807 ] - 30 - MovieRecommendationLogger - INFO - Shape of TF-IDF matrix: 45460 documents x 10000 features.
+[ 2026-03-02 21:38:53,807 ] - 35 - MovieRecommendationLogger - INFO - Model Evaluation completed. Model Accepted: True
+[ 2026-03-02 21:38:53,809 ] - 52 - MovieRecommendationLogger - INFO - ========== TRAINING PIPELINE COMPLETED SUCCESSFULLY ==========
+[ 2026-03-02 21:38:53,809 ] - 8 - MovieRecommendationLogger - INFO - Main Execution Finished

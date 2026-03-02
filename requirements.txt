@@ -1,0 +1,13 @@
+-e .
+pandas
+numpy
+scikit-learn
+fastapi
+uvicorn
+streamlit
+python-dotenv
+httpx
+pydantic
+python-box==6.0.2
+PyYAML
+ensure

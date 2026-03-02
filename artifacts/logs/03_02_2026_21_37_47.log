@@ -1,0 +1,42 @@
+[ 2026-03-02 21:37:48,567 ] - 162 - numexpr.utils - INFO - NumExpr defaulting to 12 threads.
+[ 2026-03-02 21:37:51,548 ] - 5 - MovieRecommendationLogger - INFO - Starting Main Execution Entrypoint...
+[ 2026-03-02 21:37:51,549 ] - 16 - MovieRecommendationLogger - INFO - ========== TRAINING PIPELINE STARTED ==========
+[ 2026-03-02 21:37:51,552 ] - 31 - MovieRecommendationLogger - INFO - yaml file: config\config.yaml loaded successfully
+[ 2026-03-02 21:37:51,554 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts
+[ 2026-03-02 21:37:51,554 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts/data_ingestion
+[ 2026-03-02 21:37:51,554 ] - 17 - MovieRecommendationLogger - INFO - Initiating Data Ingestion Component
+[ 2026-03-02 21:37:51,555 ] - 26 - MovieRecommendationLogger - INFO - Reading local dataset from movies_metadata.csv
+[ 2026-03-02 21:37:51,575 ] - 35 - MovieRecommendationLogger - INFO - Data copied to ingestion artifacts dir at artifacts\data_ingestion\movies_metadata.csv
+[ 2026-03-02 21:37:51,576 ] - 50 - MovieRecommendationLogger - INFO - created directory at: artifacts/data_transformation
+[ 2026-03-02 21:37:51,576 ] - 23 - MovieRecommendationLogger - INFO - Initiating Data Transformation Component
+[ 2026-03-02 21:37:51,576 ] - 27 - MovieRecommendationLogger - INFO - Reading data from artifacts\data_ingestion\movies_metadata.csv
+[ 2026-03-02 21:37:52,569 ] - 30 - MovieRecommendationLogger - INFO - Initial shape of the dataframe is (45466, 24)
+[ 2026-03-02 21:37:52,569 ] - 33 - MovieRecommendationLogger - INFO - Applying feature combinations...
+[ 2026-03-02 21:37:53,429 ] - 46 - MovieRecommendationLogger - INFO - Dropping unnecessary columns and saving required data...
+[ 2026-03-02 21:37:53,433 ] - 53 - MovieRecommendationLogger - INFO - Shape of the final dataframe before save is (45460, 3)
+[ 2026-03-02 21:37:53,433 ] - 55 - MovieRecommendationLogger - ERROR - Error occured in python script name [D:\Projects\MovieRecommendationSystem\movie-rec\src\components\data_transformation.py] line number [56] error message [typing.Any cannot be used with isinstance()]
+Traceback (most recent call last):
+  File "D:\Projects\MovieRecommendationSystem\movie-rec\src\components\data_transformation.py", line 56, in initiate_data_transformation
+    save_object(
+    ~~~~~~~~~~~^
+        file_path=self.config.transformed_data_path,
+        ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+        obj=transformed_df
+        ^^^^^^^^^^^^^^^^^^
+    )
+    ^
+  File "C:\Users\sambhav_surthi\anaconda3\Lib\site-packages\ensure\main.py", line 831, in __call__
+    if not isinstance(value, templ):
+           ~~~~~~~~~~^^^^^^^^^^^^^^
+  File "C:\Users\sambhav_surthi\anaconda3\Lib\typing.py", line 589, in __instancecheck__
+    raise TypeError("typing.Any cannot be used with isinstance()")
+TypeError: typing.Any cannot be used with isinstance()
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "D:\Projects\MovieRecommendationSystem\movie-rec\src\pipeline\training_pipeline.py", line 31, in run_pipeline
+    data_transformation_artifact = data_transformation.initiate_data_transformation()
+  File "D:\Projects\MovieRecommendationSystem\movie-rec\src\components\data_transformation.py", line 68, in initiate_data_transformation
+    raise CustomException(e, sys)
+src.exception.CustomException: Error occured in python script name [D:\Projects\MovieRecommendationSystem\movie-rec\src\components\data_transformation.py] line number [56] error message [typing.Any cannot be used with isinstance()]
