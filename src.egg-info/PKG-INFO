@@ -1,6 +1,9 @@
-Metadata-Version: 2.1
+Metadata-Version: 2.4
 Name: src
 Version: 0.0.1
 Summary: Movie Recommendation ML System
 Author: ML Engineer
 Author-email: example@example.com
+Dynamic: author
+Dynamic: author-email
+Dynamic: summary
