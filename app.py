@@ -7,7 +7,7 @@ import streamlit as st
 API_BASE = "https://movie-rec-466x.onrender.com" or "http://127.0.0.1:8000"
 TMDB_IMG = "https://image.tmdb.org/t/p/w500"
 
-st.set_page_config(page_title="Movie Recommender", page_icon="🎥", layout="wide")
+st.set_page_config(page_title="Movie Recommender", page_icon="🍿", layout="wide")
 
 # =============================
 # STYLES (minimal modern)
@@ -15,10 +15,140 @@ st.set_page_config(page_title="Movie Recommender", page_icon="🎥", layout="wid
 st.markdown(
     """
 <style>
-.block-container { padding-top: 1rem; padding-bottom: 2rem; max-width: 1400px; }
-.small-muted { color:#6b7280; font-size: 0.92rem; }
-.movie-title { font-size: 0.9rem; line-height: 1.15rem; height: 2.3rem; overflow: hidden; }
-.card { border: 1px solid rgba(0,0,0,0.08); border-radius: 16px; padding: 14px; background: rgba(255,255,255,0.7); }
+/* Import Premium Web Font */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Global Styles & Typography */
+html, body, [class*="css"] {
+    font-family: 'Inter', sans-serif !important;
+}
+
+/* Base App Background (Subtle Gradient Light Mode) */
+.stApp {
+    background: linear-gradient(135deg, #f3f4f6 0%, #ffffff 100%);
+    color: #111827;
+}
+
+/* Refined Block Container */
+.block-container {
+    padding-top: 2rem;
+    padding-bottom: 3rem;
+    max-width: 1400px;
+}
+
+/* Hide Default Streamlit Elements to make it feel like a real web app */
+#MainMenu {visibility: hidden;}
+header {visibility: hidden;}
+footer {visibility: hidden;}
+
+/* Custom Scrollbar for a polished feel */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: transparent;
+}
+::-webkit-scrollbar-thumb {
+    background-color: #cbd5e1;
+    border-radius: 10px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background-color: #94a3b8;
+}
+
+/* Typography Helpers */
+.small-muted {
+    color: #64748b;
+    font-size: 0.95rem;
+    font-weight: 400;
+    line-height: 1.5;
+}
+
+.movie-title {
+    font-size: 0.95rem;
+    font-weight: 600;
+    line-height: 1.3;
+    height: 2.6rem; /* Allow exactly two lines */
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    margin-top: 0.5rem;
+    color: #0f172a;
+}
+
+/* Premium Card (Glassmorphism + Smooth Hover) */
+.card {
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    border-radius: 20px;
+    padding: 24px;
+    background: rgba(255, 255, 255, 0.75);
+    backdrop-filter: blur(16px);
+    -webkit-backdrop-filter: blur(16px);
+    box-shadow: 0 4px 24px -4px rgba(0, 0, 0, 0.04);
+    transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 12px 32px -4px rgba(0, 0, 0, 0.1);
+}
+
+/* Interactive Elements (Buttons & Posters) Transitions */
+.stButton>button {
+    border-radius: 12px !important;
+    font-weight: 500 !important;
+    transition: all 0.2s ease !important;
+    background-color: #f1f5f9 !important; /* Lighter button background for contrast */
+    color: #1e293b !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+.stButton>button:hover {
+    background-color: #e2e8f0 !important;
+    border-color: #94a3b8 !important;
+    color: #0f172a !important;
+}
+
+/* Target images inside columns for hover effect */
+div[data-testid="stImage"] img {
+    border-radius: 12px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.08);
+}
+
+div[data-testid="stImage"] img:hover {
+    transform: scale(1.03);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.15);
+}
+
+/* Clean up select boxes and inputs */
+/* Target the actual input fields and select box backgrounds */
+div[data-baseweb="select"] > div, 
+input[class^="st-"] {
+    border-radius: 8px !important;
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+    border: 1px solid #cbd5e1 !important;
+}
+
+/* Ensure text inside dropdowns is dark */
+div[data-baseweb="popover"] {
+    background-color: #ffffff !important;
+    color: #0f172a !important;
+}
+li[role="option"] {
+    color: #0f172a !important;
+}
+
+/* Divider Styling */
+hr {
+    border-top: 1px solid rgba(0,0,0,0.06);
+    margin-top: 2rem;
+    margin-bottom: 2rem;
+}
 </style>
 """,
     unsafe_allow_html=True,
@@ -199,41 +329,58 @@ def parse_tmdb_search_to_cards(data, keyword: str, limit: int = 24):
 
 
 # =============================
-# SIDEBAR (clean)
 # =============================
-with st.sidebar:
-    st.markdown("## 🎬 Menu")
-    if st.button("🏠 Home"):
-        goto_home()
-
-    st.markdown("---")
-    st.markdown("### 🏠 Home Feed (only home)")
-    home_category = st.selectbox(
-        "Category",
-        ["trending", "popular", "top_rated", "now_playing", "upcoming"],
-        index=0,
-    )
-    grid_cols = st.slider("Grid columns", 4, 8, 6)
-
+# HEADER & HERO SECTION
 # =============================
-# HEADER
-# =============================
-st.title("🎬 Movie Recommender")
 st.markdown(
-    "<div class='small-muted'>Type keyword → dropdown suggestions + matching results → open → details + recommendations</div>",
+    """
+    <div style='text-align: center; padding: 2rem 0 3rem 0;'>
+        <h1 style='font-weight: 700; font-size: 3rem; letter-spacing: -1px; margin-bottom: 0.5rem; background: -webkit-linear-gradient(45deg, #FF6B6B, #556270); -webkit-background-clip: text; -webkit-text-fill-color: transparent;'>
+            Movie Recommender
+        </h1>
+        <p style='color: #64748b; font-size: 1.1rem; max-width: 600px; margin: 0 auto; line-height: 1.6;'>
+            Discover your next favorite film. Type a keyword, explore suggestions, and unlock personalized recommendations.
+        </p>
+    </div>
+    """,
     unsafe_allow_html=True,
 )
-st.divider()
 
 # ==========================================================
 # VIEW: HOME
 # ==========================================================
-if st.session_state.view == "home":
-    typed = st.text_input(
-        "Search by movie title (keyword)", placeholder="Type: avenger, batman, love..."
-    )
 
-    st.divider()
+# Initialize defaults if sidebar is gone
+if "home_category" not in st.session_state:
+    st.session_state.home_category = "trending"
+if "grid_cols" not in st.session_state:
+    st.session_state.grid_cols = 6
+
+if st.session_state.view == "home":
+    
+    # Top controls for view configuration
+    a, b = st.columns([1, 1])
+    with a:
+        st.session_state.home_category = st.selectbox(
+            "Home Feed Category",
+            ["trending", "popular", "top_rated", "now_playing", "upcoming"],
+            index=["trending", "popular", "top_rated", "now_playing", "upcoming"].index(st.session_state.home_category)
+        )
+    with b:
+        st.session_state.grid_cols = st.slider("Grid Columns", 4, 8, st.session_state.grid_cols)
+
+    st.markdown("<br>", unsafe_allow_html=True)
+    
+    # Wrap search in a container for better spacing
+    c1, c2, c3 = st.columns([1, 4, 1])
+    with c2:
+        typed = st.text_input(
+            "🔎 Search Movies", 
+            placeholder="e.g. Inception, Batman, Interstellar...", 
+            label_visibility="collapsed"
+        )
+    
+    st.markdown("<br><br>", unsafe_allow_html=True)
 
     # SEARCH MODE (Autocomplete + word-match results)
     if typed.strip():
@@ -267,16 +414,16 @@ if st.session_state.view == "home":
         st.stop()
 
     # HOME FEED MODE
-    st.markdown(f"### 🏠 Home — {home_category.replace('_',' ').title()}")
+    st.markdown(f"### 🏠 Home — {st.session_state.home_category.replace('_',' ').title()}")
 
     home_cards, err = api_get_json(
-        "/home", params={"category": home_category, "limit": 24}
+        "/home", params={"category": st.session_state.home_category, "limit": 24}
     )
     if err or not home_cards:
         st.error(f"Home feed failed: {err or 'Unknown error'}")
         st.stop()
 
-    poster_grid(home_cards, cols=grid_cols, key_prefix="home_feed")
+    poster_grid(home_cards, cols=st.session_state.grid_cols, key_prefix="home_feed")
 
 # ==========================================================
 # VIEW: DETAILS
@@ -290,11 +437,10 @@ elif st.session_state.view == "details":
         st.stop()
 
     # Top bar
-    a, b = st.columns([3, 1])
-    with a:
-        st.markdown("### 📄 Movie Details")
+    st.markdown("<br>", unsafe_allow_html=True)
+    a, b = st.columns([10, 1])
     with b:
-        if st.button("← Back to Home"):
+        if st.button("← Back", use_container_width=True):
             goto_home()
 
     # Details (your FastAPI safe route)
@@ -304,10 +450,11 @@ elif st.session_state.view == "details":
         st.stop()
 
     # Layout: Poster LEFT, Details RIGHT
+    st.markdown("<br>", unsafe_allow_html=True)
     left, right = st.columns([1, 2.4], gap="large")
 
     with left:
-        st.markdown("<div class='card'>", unsafe_allow_html=True)
+        st.markdown("<div class='card' style='padding: 1rem;'>", unsafe_allow_html=True)
         if data.get("poster_url"):
             st.image(data["poster_url"], use_container_width=True)
         else:
@@ -316,26 +463,26 @@ elif st.session_state.view == "details":
 
     with right:
         st.markdown("<div class='card'>", unsafe_allow_html=True)
-        st.markdown(f"## {data.get('title','')}")
+        st.markdown(f"<h2 style='margin-top: 0; padding-top: 0;'>{data.get('title','')}</h2>", unsafe_allow_html=True)
         release = data.get("release_date") or "-"
         genres = ", ".join([g["name"] for g in data.get("genres", [])]) or "-"
         st.markdown(
-            f"<div class='small-muted'>Release: {release}</div>", unsafe_allow_html=True
+            f"<div class='small-muted' style='margin-bottom: 0.5rem;'>📅 Release: {release}</div>", unsafe_allow_html=True
         )
         st.markdown(
-            f"<div class='small-muted'>Genres: {genres}</div>", unsafe_allow_html=True
+            f"<div class='small-muted' style='margin-bottom: 1.5rem;'>🎭 Genres: {genres}</div>", unsafe_allow_html=True
         )
-        st.markdown("---")
-        st.markdown("### Overview")
-        st.write(data.get("overview") or "No overview available.")
+        st.markdown("#### Overview")
+        st.markdown(f"<div style='line-height: 1.6; color: #334155;'>{data.get('overview') or 'No overview available.'}</div>", unsafe_allow_html=True)
         st.markdown("</div>", unsafe_allow_html=True)
 
     if data.get("backdrop_url"):
-        st.markdown("#### Backdrop")
+        st.markdown("<br>", unsafe_allow_html=True)
+        st.markdown("#### 🖼️ Backdrop")
         st.image(data["backdrop_url"], use_container_width=True)
 
-    st.divider()
-    st.markdown("### ✅ Recommendations")
+    st.markdown("<hr style='margin: 4rem 0;'>", unsafe_allow_html=True)
+    st.markdown("<h3 style='margin-bottom: 2rem;'>✨ Recommended For You</h3>", unsafe_allow_html=True)
 
     # Recommendations (TF-IDF + Genre) via your bundle endpoint
     title = (data.get("title") or "").strip()
@@ -349,14 +496,14 @@ elif st.session_state.view == "details":
             st.markdown("#### 🔎 Similar Movies (TF-IDF)")
             poster_grid(
                 to_cards_from_tfidf_items(bundle.get("tfidf_recommendations")),
-                cols=grid_cols,
+                cols=st.session_state.grid_cols,
                 key_prefix="details_tfidf",
             )
 
             st.markdown("#### 🎭 More Like This (Genre)")
             poster_grid(
                 bundle.get("genre_recommendations", []),
-                cols=grid_cols,
+                cols=st.session_state.grid_cols,
                 key_prefix="details_genre",
             )
         else:
@@ -366,7 +513,7 @@ elif st.session_state.view == "details":
             )
             if not err3 and genre_only:
                 poster_grid(
-                    genre_only, cols=grid_cols, key_prefix="details_genre_fallback"
+                    genre_only, cols=st.session_state.grid_cols, key_prefix="details_genre_fallback"
                 )
             else:
                 st.warning("No recommendations available right now.")
