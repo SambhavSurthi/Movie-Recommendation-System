@@ -409,7 +409,7 @@ if st.session_state.view == "home":
                     st.info("No suggestions found. Try another keyword.")
 
                 st.markdown("### Results")
-                poster_grid(cards, cols=grid_cols, key_prefix="search_results")
+                poster_grid(cards, cols=st.session_state.grid_cols, key_prefix="search_results")
 
         st.stop()
 
@@ -493,6 +493,9 @@ elif st.session_state.view == "details":
         )
 
         if not err2 and bundle:
+            print("DEBUG BUNDLE KEYS:", bundle.keys())
+            print("DEBUG TFIDF LEN:", len(bundle.get("tfidf_recommendations", [])))
+            print("DEBUG GENRE LEN:", len(bundle.get("genre_recommendations", [])))
             st.markdown("#### 🔎 Similar Movies (TF-IDF)")
             poster_grid(
                 to_cards_from_tfidf_items(bundle.get("tfidf_recommendations")),
