@@ -4,11 +4,11 @@ numpy
 scikit-learn
 fastapi
 uvicorn
-streamlit
+streamlit>=1.32
 python-dotenv
 httpx
 pydantic
 python-box==6.0.2
 PyYAML
 ensure
-altair==4.2.2
+altair>=5
